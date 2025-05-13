@@ -1,1 +1,23 @@
-/* You can add global styles to this file, and also import other style files */
+// styles.scss o tu archivo de estilos global
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Personalización de Angular Material
+.mat-mdc-list-item {
+  &.mdc-list-item--selected {
+    @apply bg-blue-50 text-blue-600;
+    
+    .mat-icon {
+      @apply text-blue-600;
+    }
+  }
+}
+
+.mat-mdc-button:not(:disabled) {
+  @apply transition-colors duration-200;
+}
+
+.mat-mdc-toolbar {
+  @apply shadow-md;
+}
