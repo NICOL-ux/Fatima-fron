@@ -16,7 +16,7 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/main/pages/dashboard/dashboard.component').then(m => m.DashboardComponent),
+          import('./features/main/pages/alumnos/alumnos.component').then(m => m.AlumnosComponent),
       },
       {
         path: 'alumnos',

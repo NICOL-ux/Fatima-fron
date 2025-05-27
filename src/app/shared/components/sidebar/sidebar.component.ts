@@ -27,7 +27,6 @@ export class SidebarComponent implements OnInit, OnDestroy {
   @Output() logout = new EventEmitter<void>();
 
   menuItems = [
-    { icon: 'dashboard', label: 'Dashboard', route: 'dashboard' },
     { icon: 'people', label: 'Alumnos', route: 'alumnos' },
     { icon: 'school', label: 'Gestion', route: 'gestion' },
     { icon: 'payments', label: 'Ingreso', route: 'ingreso' },

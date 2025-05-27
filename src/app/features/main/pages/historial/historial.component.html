@@ -1,49 +1,81 @@
-<div class="p-6 bg-gray-50 min-h-screen">
-  <div class="max-w-6xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+<div class="p-8 bg-gradient-to-br from-blue-50 to-white min-h-screen flex justify-center items-start">
+  <div class="w-full max-w-7xl bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col">
+
     <!-- Header -->
-    <div class="px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-800">
-      <h2 class="text-2xl font-bold text-white">Historial de Aulas</h2>
-      <p class="text-blue-100 text-sm mt-1">Registro completo de todas las actividades realizadas</p>
+    <div class="bg-gradient-to-r from-blue-700 to-blue-500 p-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0 rounded-t-3xl">
+      <div>
+        <h2 class="text-3xl font-extrabold text-white tracking-tight">Historial de Aulas</h2>
+        <p class="text-blue-200 mt-1 text-sm sm:text-base">Registro completo de todas las actividades realizadas</p>
+      </div>
+      <button
+        (click)="generarPDF()"
+        class="flex items-center gap-2 bg-white text-blue-700 font-semibold px-5 py-3 rounded-lg shadow-md hover:bg-blue-50 transition"
+        aria-label="Generar PDF del historial"
+      >
+        <mat-icon class="text-blue-600" aria-hidden="true">picture_as_pdf</mat-icon>
+        Generar PDF
+      </button>
     </div>
 
-    <!-- Table Container -->
+    <!-- Filtro -->
+    <div class="px-8 py-6 border-b border-gray-200 bg-gray-50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <input
+        type="text"
+        placeholder="Buscar acción o mensaje..."
+        [(ngModel)]="filtroTexto"
+        (input)="applyFilter()"
+        class="w-full sm:w-80 px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+        aria-label="Buscar en el historial"
+      />
+    </div>
+
+    <!-- Tabla -->
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-100">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Acción</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Mensaje</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Fecha</th>
+            <th class="px-8 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wide">Acción</th>
+            <th class="px-8 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wide">Mensaje</th>
+            <th class="px-8 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wide">Fecha</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let item of filteredHistorial" class="hover:bg-gray-50 transition-colors duration-150">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full" 
-                    [ngClass]="{
-                      'bg-green-100 text-green-800': item.action === 'Creación',
-                      'bg-blue-100 text-blue-800': item.action === 'Actualización',
-                      'bg-yellow-100 text-yellow-800': item.action === 'Eliminación',
-                      'bg-gray-100 text-gray-800': !['Creación','Actualización','Eliminación'].includes(item.action)
-                    }">
+          <tr *ngFor="let item of filteredHistorial" class="hover:bg-blue-50 transition-colors duration-200 cursor-default">
+            <td class="px-8 py-5 whitespace-nowrap align-top">
+              <span
+                class="inline-block px-3 py-1 text-xs font-semibold rounded-full"
+                [ngClass]="{
+                  'bg-green-100 text-green-800': item.action === 'Creación',
+                  'bg-blue-100 text-blue-800': item.action === 'Actualización',
+                  'bg-yellow-100 text-yellow-800': item.action === 'Eliminación',
+                  'bg-gray-100 text-gray-800': !['Creación','Actualización','Eliminación'].includes(item.action)
+                }"
+                aria-label="Tipo de acción"
+              >
                 {{ item.action }}
               </span>
             </td>
-            <td class="px-6 py-4">
-              <div class="text-sm text-gray-900">{{ item.message }}</div>
+            <td class="px-8 py-5 align-top text-gray-900 text-sm leading-relaxed break-words">
+              {{ getMensaje(item) }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm text-gray-500">{{ item.createdAt | date:'medium' }}</div>
-              <div class="text-xs text-gray-400">{{ item.createdAt | date:'shortTime' }}</div>
+            <td class="px-8 py-5 whitespace-nowrap align-top text-gray-500 text-sm">
+              <time [attr.datetime]="getFecha(item)">{{ getFecha(item) ? (getFecha(item) | date: 'medium') : 'Fecha no disponible' }}</time>
+              <div class="text-xs text-gray-400 mt-1">
+                {{ getFecha(item) ? (getFecha(item) | date:'shortTime') : '' }}
+              </div>
             </td>
+          </tr>
+          <tr *ngIf="filteredHistorial.length === 0">
+            <td colspan="3" class="px-8 py-6 text-center text-gray-500 italic select-none">No se encontraron registros.</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <!-- Footer -->
-    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 text-right">
-      <p class="text-sm text-gray-600">Mostrando <span class="font-medium">{{filteredHistorial.length}}</span> registros</p>
+    <div class="px-8 py-4 border-t border-gray-200 bg-gray-50 text-right text-gray-600 text-sm font-medium select-none">
+      Mostrando <span class="text-blue-700">{{ filteredHistorial.length }}</span> registro{{ filteredHistorial.length !== 1 ? 's' : '' }}
     </div>
+
   </div>
 </div>

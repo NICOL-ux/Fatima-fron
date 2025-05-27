@@ -1,45 +1,100 @@
-<h2 mat-dialog-title>
-  {{ isEditMode ? 'Editar Tablet' : 'Nueva Tablet' }}
-</h2>
+<div class="tablet-form-container p-8 max-w-lg mx-auto bg-white rounded-lg shadow-lg transition-transform transform hover:scale-105 duration-300">
+  <!-- Encabezado -->
+  <h2 mat-dialog-title class="dialog-header mb-4 text-2xl font-semibold text-gray-800">
+    {{ isEditMode ? 'Editar Tablet' : 'Nueva Tablet' }}
+    <span class="dialog-subtitle block text-sm text-gray-500 mt-2 font-medium">
+      {{ isEditMode ? 'Modifica los datos de la tablet registrada' : 'Registra una nueva tablet en el sistema' }}
+    </span>
+  </h2>
 
-<form [formGroup]="tabletForm" (ngSubmit)="onSave()" class="tablet-form">
-  <mat-dialog-content>
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Código</mat-label>
-      <input matInput formControlName="code" placeholder="Código de la tablet" />
-      <mat-error *ngIf="tabletForm.get('code')?.hasError('required')">
-        El código es obligatorio
-      </mat-error>
-      <mat-error *ngIf="tabletForm.get('code')?.hasError('minlength')">
-        El código debe tener al menos 4 caracteres
-      </mat-error>
-    </mat-form-field>
+  <!-- Formulario -->
+  <form [formGroup]="tabletForm" (ngSubmit)="onSave()" class="tablet-form space-y-6">
+    <mat-dialog-content class="form-content space-y-6">
 
-    <mat-form-field appearance="fill" class="full-width">
-      <mat-label>Estado</mat-label>
-      <mat-select formControlName="status">
-        <mat-option *ngFor="let status of statusOptions" [value]="status">
-          {{ status | titlecase }}
-        </mat-option>
-      </mat-select>
-      <mat-error *ngIf="tabletForm.get('status')?.hasError('required')">
-        El estado es obligatorio
-      </mat-error>
-    </mat-form-field>
+      <!-- Código de la Tablet -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label class="font-medium text-gray-700">Código</mat-label>
+        <mat-icon matPrefix class="text-blue-600 mr-2">qr_code_2</mat-icon>
+        <input matInput formControlName="code" placeholder="Ej: TAB1234" autocomplete="off" />
+        <mat-hint class="text-sm text-gray-500">Ingrese el código de identificación de la tablet</mat-hint>
+        <!-- Errores -->
+        <mat-error *ngIf="tabletForm.get('code')?.hasError('required')">
+          <mat-icon aria-hidden="true" class="mr-1 text-red-500">error</mat-icon>
+          El código es obligatorio
+        </mat-error>
+        <mat-error *ngIf="tabletForm.get('code')?.hasError('minlength')">
+          <mat-icon aria-hidden="true" class="mr-1 text-red-500">error</mat-icon>
+          Mínimo 4 caracteres
+        </mat-error>
+      </mat-form-field>
 
-    <mat-progress-bar
-      *ngIf="loading"
-      mode="indeterminate"
-      color="primary"
-    ></mat-progress-bar>
-  </mat-dialog-content>
+      <!-- Estado -->
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label class="font-medium text-gray-700">Estado</mat-label>
+        <mat-icon matPrefix class="text-green-600 mr-2">check_circle</mat-icon>
+        <mat-select formControlName="status" placeholder="Selecciona el estado" aria-label="Estado de la tablet">
+          <mat-option *ngFor="let status of statusOptions" [value]="status">
+            {{ status | titlecase }}
+          </mat-option>
+        </mat-select>
+        <!-- Error -->
+        <mat-error *ngIf="tabletForm.get('status')?.hasError('required')">
+          <mat-icon aria-hidden="true" class="mr-1 text-red-500">error</mat-icon>
+          El estado es obligatorio
+        </mat-error>
+      </mat-form-field>
 
-  <mat-dialog-actions align="end">
-    <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="loading">
-      Cancelar
-    </button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="loading || tabletForm.invalid">
-      {{ isEditMode ? 'Actualizar' : 'Guardar' }}
-    </button>
-  </mat-dialog-actions>
-</form>
+      <!-- Barra de carga -->
+      <mat-progress-bar
+        *ngIf="loading"
+        mode="indeterminate"
+        color="primary"
+        class="mt-4 rounded-md"
+        aria-label="Cargando"
+      ></mat-progress-bar>
+    </mat-dialog-content>
+
+    <!-- Acciones -->
+    <mat-dialog-actions align="end" class="mt-6 space-x-4 border-t border-gray-200 pt-4">
+      <!-- Botón Cancelar -->
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="onCancel()"
+        [disabled]="loading"
+        class="flex items-center px-4 py-2 border-gray-300 hover:bg-gray-100 transition rounded-md"
+        aria-label="Cancelar edición"
+      >
+        <mat-icon class="mr-2 text-gray-600">close</mat-icon>
+        Cancelar
+      </button>
+
+      <!-- Botón Guardar / Actualizar -->
+      <button
+        mat-flat-button
+        color="primary"
+        type="submit"
+        [disabled]="loading || tabletForm.invalid"
+        class="flex items-center px-6 py-2 font-semibold rounded-md shadow-md hover:shadow-lg transition"
+         [attr.aria-label]="isEditMode ? 'Actualizar tablet' : 'Guardar tablet'"
+        *ngIf="isEditMode; else saveLabel"
+      >
+        <mat-icon class="mr-2">save</mat-icon>
+        {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+      </button>
+      <ng-template #saveLabel>
+        <button
+          mat-flat-button
+          color="primary"
+          type="submit"
+          [disabled]="loading || tabletForm.invalid"
+          class="flex items-center px-6 py-2 font-semibold rounded-md shadow-md hover:shadow-lg transition"
+          aria-label="Guardar tablet"
+        >
+          <mat-icon class="mr-2">save</mat-icon>
+          Guardar
+        </button>
+      </ng-template>
+    </mat-dialog-actions>
+  </form>
+</div>

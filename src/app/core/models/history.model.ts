@@ -1,9 +1,13 @@
 export interface History {
-  _id: string;
-  entityId: string;
-  entityType: 'Student' | 'Tablet' | 'Classroom' | 'User';
+  _id?: string;
+  tabletCode: string;
+  studentDni: string;
+  studentName: string;
   action: string;
-  message: string;
-  createdAt: string;
-  updatedAt: string;
+  previousStatus?: string;
+  newStatus?: string;
+  observation?: string;
+  date: string; // o Date
+  createdAt?: string;
+  updatedAt?: string;
 }

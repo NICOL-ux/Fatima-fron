@@ -1,0 +1,77 @@
+.student-form-container {
+  font-family: 'Roboto', sans-serif;
+}
+
+.dialog-header {
+  padding: 20px 24px 8px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+.dialog-subtitle {
+  display: block;
+  font-size: 0.875rem;
+  color: #7f8c8d;
+  font-weight: 400;
+  margin-top: 4px;
+}
+
+.form-content {
+  padding: 0 24px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.form-grid.single-column {
+  flex-direction: column;
+}
+
+.form-field {
+  flex: 1 1 45%;
+  min-width: 200px;
+}
+
+.form-icon {
+  color: #7f8c8d;
+  margin-right: 8px;
+}
+
+.error-icon {
+  font-size: 18px;
+  margin-right: 4px;
+  vertical-align: middle;
+  color: #e53935;
+}
+
+.progress-bar {
+  margin-top: 8px;
+  border-radius: 4px;
+}
+
+.form-actions {
+  padding: 16px 24px;
+  margin-top: 8px;
+}
+
+.cancel-btn {
+  margin-right: 8px;
+  color: #7f8c8d;
+}
+
+.submit-btn {
+  transition: all 0.2s ease;
+}
+
+@media (max-width: 600px) {
+  .form-grid {
+    flex-direction: column;
+  }
+}
