@@ -1,34 +1,45 @@
-<h2 class="text-xl font-semibold mb-4">
+<h2 mat-dialog-title>
   {{ isEditMode ? 'Editar Tablet' : 'Nueva Tablet' }}
 </h2>
 
-<form [formGroup]="tabletForm" (ngSubmit)="onSave()" class="space-y-4">
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Código</mat-label>
-    <input matInput placeholder="Código único" formControlName="code" />
-    <mat-error *ngIf="tabletForm.get('code')?.hasError('required')">
-      El código es obligatorio
-    </mat-error>
-  </mat-form-field>
+<form [formGroup]="tabletForm" (ngSubmit)="onSave()" class="tablet-form">
+  <mat-dialog-content>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Código</mat-label>
+      <input matInput formControlName="code" placeholder="Código de la tablet" />
+      <mat-error *ngIf="tabletForm.get('code')?.hasError('required')">
+        El código es obligatorio
+      </mat-error>
+      <mat-error *ngIf="tabletForm.get('code')?.hasError('minlength')">
+        El código debe tener al menos 4 caracteres
+      </mat-error>
+    </mat-form-field>
 
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Estado</mat-label>
-    <mat-select formControlName="status">
-      <mat-option *ngFor="let status of statusOptions" [value]="status">
-        {{ status | titlecase }}
-      </mat-option>
-    </mat-select>
-    <mat-error *ngIf="tabletForm.get('status')?.hasError('required')">
-      El estado es obligatorio
-    </mat-error>
-  </mat-form-field>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Estado</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let status of statusOptions" [value]="status">
+          {{ status | titlecase }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="tabletForm.get('status')?.hasError('required')">
+        El estado es obligatorio
+      </mat-error>
+    </mat-form-field>
 
-  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+    <mat-progress-bar
+      *ngIf="loading"
+      mode="indeterminate"
+      color="primary"
+    ></mat-progress-bar>
+  </mat-dialog-content>
 
-  <div class="flex justify-end gap-2 mt-4">
-    <button mat-stroked-button type="button" (click)="onCancel()">Cancelar</button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="tabletForm.invalid || loading">
-      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+  <mat-dialog-actions align="end">
+    <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="loading">
+      Cancelar
     </button>
-  </div>
+    <button mat-flat-button color="primary" type="submit" [disabled]="loading || tabletForm.invalid">
+      {{ isEditMode ? 'Actualizar' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
 </form>

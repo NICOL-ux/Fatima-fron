@@ -1,10 +1,33 @@
-<h2 mat-dialog-title>{{ data.title }}</h2>
+<div class="dialog-container">
+  <h2 mat-dialog-title class="text-xl font-semibold text-gray-800 flex items-center gap-2">
+    <mat-icon *ngIf="icon" [color]="color">{{icon}}</mat-icon>
+    {{ title }}
+  </h2>
 
-<mat-dialog-content class="py-4">
-  <p>{{ data.message }}</p>
-</mat-dialog-content>
+  <mat-divider></mat-divider>
 
-<mat-dialog-actions align="end">
-  <button mat-button (click)="onCancel()">Cancelar</button>
-  <button mat-flat-button color="warn" (click)="onConfirm()">Eliminar</button>
-</mat-dialog-actions>
+  <mat-dialog-content class="py-6 px-4">
+    <div class="flex items-start gap-4">
+      <mat-icon *ngIf="!icon" [color]="color" class="mt-1">help_outline</mat-icon>
+      <p class="text-gray-700 leading-6">{{ message }}</p>
+    </div>
+  </mat-dialog-content>
+
+  <mat-divider></mat-divider>
+
+  <mat-dialog-actions align="end" class="px-6 py-4 bg-gray-50 rounded-b-lg">
+    <button mat-stroked-button 
+            [color]="color" 
+            (click)="onCancel()"
+            class="mr-2 hover:bg-gray-100">
+      {{ cancelText || 'Cancelar' }}
+    </button>
+    <button mat-flat-button 
+            [color]="color" 
+            (click)="onConfirm()"
+            cdkFocusInitial
+            class="hover:opacity-90">
+      {{ confirmText || 'Confirmar' }}
+    </button>
+  </mat-dialog-actions>
+</div>

@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { TabletsService, Tablet } from '../../../../core/services/tablets.service';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -9,6 +9,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
+
+type TabletStatus = 'free' | 'in_use' | 'inactive';
 
 @Component({
   selector: 'app-dialog-tablet',
@@ -27,13 +29,14 @@ import { MatSelectModule } from '@angular/material/select';
     MatButtonModule,
     MatIconModule,
     MatProgressBarModule,
+    MatDialogModule
   ]
 })
 export class DialogTabletComponent implements OnInit {
   tabletForm!: FormGroup;
   isEditMode = false;
   loading = false;
-  statusOptions = ['free', 'in_use', 'inactive'];
+  statusOptions: TabletStatus[] = ['free', 'in_use', 'inactive'];
 
   constructor(
     private fb: FormBuilder,
@@ -55,7 +58,16 @@ export class DialogTabletComponent implements OnInit {
     if (this.tabletForm.invalid) return;
 
     this.loading = true;
-    const tabletData = this.tabletForm.value;
+
+    const code = this.tabletForm.get('code')?.value as string;
+    const statusRaw = this.tabletForm.get('status')?.value as string | null;
+
+    const validStatuses: TabletStatus[] = ['free', 'in_use', 'inactive'];
+    const status: TabletStatus = validStatuses.includes(statusRaw as TabletStatus)
+      ? (statusRaw as TabletStatus)
+      : 'free';
+
+    const tabletData: { code: string; status: TabletStatus } = { code, status };
 
     if (this.isEditMode && this.data?.tablet?._id) {
       this.tabletsService.update(this.data.tablet._id, tabletData).subscribe({
@@ -64,15 +76,20 @@ export class DialogTabletComponent implements OnInit {
         complete: () => (this.loading = false),
       });
     } else {
-      this.tabletsService.create(tabletData).subscribe({
-        next: (res) => this.dialogRef.close(res),
-        error: () => (this.loading = false),
-        complete: () => (this.loading = false),
-      });
+     this.tabletsService.createTablet(tabletData).subscribe({
+  next: (res) => this.dialogRef.close(res),
+  error: (err) => {
+    console.error('Error al guardar tablet:', err);
+    this.loading = false;
+  },
+  complete: () => (this.loading = false),
+});
+
     }
   }
 
   onCancel(): void {
     this.dialogRef.close();
   }
+
 }

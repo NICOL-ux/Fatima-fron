@@ -3,11 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environment/environment'; 
 
+export type TabletStatus = 'free' | 'in_use' | 'inactive';
+
 export interface Tablet {
   _id?: string;
   code: string;
-  status: 'free' | 'in_use' | 'inactive';
-  assignedTo?: { dni: string; firstName: string; lastName: string } | null;
+  status: TabletStatus;
+  assignedTo?: {
+    dni: string;
+    firstName: string;
+    lastName: string;
+  } | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -16,30 +22,48 @@ export interface Tablet {
   providedIn: 'root'
 })
 export class TabletsService {
-  private apiUrl = `${environment.apiUrl}/tablets`; // <-- CORREGIDO
+  private apiUrl = `${environment.apiUrl}/tablets`;
 
   constructor(private http: HttpClient) {}
 
+  /**
+   * Obtener todas las tablets
+   */
   getAll(): Observable<Tablet[]> {
     return this.http.get<Tablet[]>(this.apiUrl);
   }
 
-  create(tablet: Partial<Tablet>): Observable<Tablet> {
-    return this.http.post<Tablet>(this.apiUrl, tablet);
+  /**
+   * Crear nueva tablet
+   */
+  createTablet(data: { code: string; status: TabletStatus }): Observable<Tablet> {
+    return this.http.post<Tablet>(this.apiUrl, data);
   }
 
+  /**
+   * Actualizar tablet
+   */
   update(id: string, tablet: Partial<Tablet>): Observable<Tablet> {
     return this.http.patch<Tablet>(`${this.apiUrl}/${id}`, tablet);
   }
 
-  delete(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  /**
+   * Eliminar tablet
+   */
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  assign(id: string, dni: number): Observable<Tablet> {
+  /**
+   * Asignar tablet a un estudiante por DNI
+   */
+  assign(id: string, dni: number | string): Observable<Tablet> {
     return this.http.patch<Tablet>(`${this.apiUrl}/${id}/assign`, { dni });
   }
 
+  /**
+   * Desasignar tablet
+   */
   unassign(id: string): Observable<Tablet> {
     return this.http.patch<Tablet>(`${this.apiUrl}/${id}/unassign`, {});
   }

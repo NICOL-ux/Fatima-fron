@@ -31,7 +31,6 @@ import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-
     MatTableModule,
     MatIconModule,
     MatButtonModule,
-    RouterOutlet
   ],
 
 })

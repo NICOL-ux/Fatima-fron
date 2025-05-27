@@ -1,15 +1,103 @@
-<form [formGroup]="tabletForm" (ngSubmit)="guardarTablet()" class="space-y-4 p-4 max-w-md mx-auto">
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Código de la tablet</mat-label>
-    <input matInput formControlName="code" required />
-  </mat-form-field>
+<mat-card class="p-8 rounded-xl shadow-sm border border-gray-200/50 max-w-md mx-auto bg-white/95 backdrop-blur-sm">
+  <mat-card-header class="mb-6 -mx-2">
+    <mat-card-title class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+      <mat-icon class="text-blue-500 bg-blue-50 p-2 rounded-full" aria-hidden="true">tablet_mac</mat-icon>
+      <div>
+        {{ tabletForm.get('id')?.value ? 'Editar Tablet' : 'Registrar Tablet' }}
+        <mat-card-subtitle class="text-gray-500 mt-1 font-normal">
+          {{ tabletForm.get('id')?.value
+            ? 'Actualiza los datos de la tablet'
+            : 'Completa los campos para registrar una nueva tablet' }}
+        </mat-card-subtitle>
+      </div>
+    </mat-card-title>
+  </mat-card-header>
 
-  <mat-form-field appearance="fill" class="w-full">
-    <mat-label>Estado</mat-label>
-    <input matInput formControlName="status" required />
-  </mat-form-field>
+  <mat-divider class="mb-6"></mat-divider>
 
-  <button mat-raised-button color="primary" type="submit" [disabled]="tabletForm.invalid">
-    Guardar Tablet
-  </button>
-</form>
+  <form [formGroup]="tabletForm" (ngSubmit)="guardarTablet()" class="space-y-5" aria-label="Formulario de registro o edición de tablet">
+    <!-- Campo Código -->
+    <div class="space-y-2">
+      <mat-form-field appearance="fill" class="w-full" floatLabel="always">
+        <mat-label>Código de la tablet <span aria-hidden="true" class="text-red-500">*</span></mat-label>
+        <input
+          matInput
+          formControlName="code"
+          placeholder="Ej: TAB-2024-001"
+          class="!text-gray-800 !font-medium"
+          aria-required="true"
+          aria-describedby="code-error code-hint"
+        />
+        <mat-icon matPrefix class="text-gray-400 mr-2" aria-hidden="true">qr_code_2</mat-icon>
+        <mat-hint id="code-hint" class="text-xs text-gray-400">Usa un código único para identificar la tablet</mat-hint>
+        <mat-error id="code-error" *ngIf="tabletForm.get('code')?.hasError('required')" class="flex items-center text-xs text-red-600 mt-1 ml-2">
+          <mat-icon class="text-red-500 mr-1 scale-90" aria-hidden="true">error_outline</mat-icon>
+          El código es obligatorio
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Campo Estado -->
+    <div class="space-y-2">
+      <mat-form-field appearance="fill" class="w-full" floatLabel="always">
+        <mat-label>Estado <span aria-hidden="true" class="text-red-500">*</span></mat-label>
+        <mat-select
+          formControlName="status"
+          aria-required="true"
+          aria-describedby="status-error"
+          placeholder="Selecciona un estado"
+        >
+          <mat-option value="disponible" class="flex items-center gap-3 py-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-green-500" aria-hidden="true"></span>
+            Disponible
+          </mat-option>
+          <mat-option value="asignada" class="flex items-center gap-3 py-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500" aria-hidden="true"></span>
+            Asignada
+          </mat-option>
+          <mat-option value="mantenimiento" class="flex items-center gap-3 py-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-yellow-500" aria-hidden="true"></span>
+            En mantenimiento
+          </mat-option>
+        </mat-select>
+        <mat-error id="status-error" *ngIf="tabletForm.get('status')?.hasError('required')" class="flex items-center text-xs text-red-600 mt-1 ml-2">
+          <mat-icon class="text-red-500 mr-1 scale-90" aria-hidden="true">error_outline</mat-icon>
+          Selecciona un estado
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <mat-divider class="!my-6"></mat-divider>
+
+    <!-- Botones de acción -->
+    <div class="flex justify-end gap-3 pt-2">
+      <button
+        mat-stroked-button
+        type="button"
+        (click)="onCancel()"
+        class="border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400 px-5 py-2.5 rounded-lg transition-all hover:shadow-sm"
+        aria-label="Cancelar registro o edición"
+      >
+        <span class="flex items-center gap-1.5">
+          <mat-icon class="text-gray-500 scale-90" aria-hidden="true">close</mat-icon>
+          Cancelar
+        </span>
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loading || tabletForm.invalid"
+        class="min-w-[120px] bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:shadow-md px-6 py-2.5 rounded-lg transition-all disabled:opacity-70 disabled:shadow-none"
+        [attr.aria-label]="tabletForm.get('id')?.value ? 'Actualizar tablet' : 'Registrar tablet'"
+      >
+        <span class="flex items-center justify-center gap-2">
+          <mat-icon *ngIf="!loading" class="scale-90" aria-hidden="true">save</mat-icon>
+          <mat-spinner *ngIf="loading" diameter="20" strokeWidth="3" class="!w-5 !h-5" role="alert" aria-live="assertive"></mat-spinner>
+          {{ tabletForm.get('id')?.value ? 'Actualizar' : 'Registrar' }}
+        </span>
+      </button>
+    </div>
+  </form>
+</mat-card>

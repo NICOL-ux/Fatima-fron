@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { IndexComponent } from './features/main/layout/index/index.component';
+import { AuthGuard } from './core/guard/auth.guard';  // <-- ruta corregida
 
 export const routes: Routes = [
   {
@@ -10,6 +11,7 @@ export const routes: Routes = [
   {
     path: 'index',
     component: IndexComponent,
+    canActivate: [AuthGuard],   // <-- protege toda esta ruta con AuthGuard
     children: [
       {
         path: 'dashboard',
@@ -43,7 +45,6 @@ export const routes: Routes = [
       },
     ],
   },
-  // Redireccionar cualquier ruta no encontrada al login o dashboard según prefieras
   {
     path: '**',
     redirectTo: '', // redirige al login si no existe ruta

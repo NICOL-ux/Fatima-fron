@@ -1,0 +1,12 @@
+:host {
+  display: block;
+  padding: 1.5rem;
+}
+
+mat-form-field {
+  font-size: 1rem;
+}
+
+button[mat-flat-button] {
+  transition: background-color 0.3s ease;
+}
