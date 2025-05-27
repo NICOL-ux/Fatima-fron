@@ -1,1 +1,15 @@
-<p>ingreso works!</p>
+<form [formGroup]="tabletForm" (ngSubmit)="guardarTablet()" class="space-y-4 p-4 max-w-md mx-auto">
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Código de la tablet</mat-label>
+    <input matInput formControlName="code" required />
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full">
+    <mat-label>Estado</mat-label>
+    <input matInput formControlName="status" required />
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" type="submit" [disabled]="tabletForm.invalid">
+    Guardar Tablet
+  </button>
+</form>

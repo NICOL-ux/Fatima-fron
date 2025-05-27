@@ -1,0 +1,54 @@
+<h2 mat-dialog-title>
+  {{ isEditMode ? 'Editar Estudiante' : 'Nuevo Estudiante' }}
+</h2>
+
+<form [formGroup]="studentForm" (ngSubmit)="onSave()" mat-dialog-content>
+
+  <mat-form-field appearance="fill" class="w-full mb-4">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="firstName" />
+    <mat-error *ngIf="studentForm.get('firstName')?.invalid">
+      El nombre es obligatorio.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full mb-4">
+    <mat-label>Apellido</mat-label>
+    <input matInput formControlName="lastName" />
+    <mat-error *ngIf="studentForm.get('lastName')?.invalid">
+      El apellido es obligatorio.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full mb-4">
+    <mat-label>DNI</mat-label>
+    <input matInput formControlName="dni" />
+    <mat-error *ngIf="studentForm.get('dni')?.invalid">
+      DNI inválido (mínimo 6 caracteres).
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full mb-4">
+    <mat-label>Grado</mat-label>
+    <input matInput formControlName="grade" />
+    <mat-error *ngIf="studentForm.get('grade')?.invalid">
+      El grado es obligatorio.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="w-full mb-4">
+    <mat-label>Sección</mat-label>
+    <input matInput formControlName="section" />
+    <mat-error *ngIf="studentForm.get('section')?.invalid">
+      La sección es obligatoria.
+    </mat-error>
+  </mat-form-field>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()" [disabled]="loading">Cancelar</button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="loading || studentForm.invalid">
+      {{ loading ? 'Guardando...' : 'Guardar' }}
+    </button>
+  </mat-dialog-actions>
+
+</form>

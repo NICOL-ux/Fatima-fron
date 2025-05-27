@@ -1,49 +1,64 @@
 <div class="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#5f9bfb] to-[#0b1b5b]">
   <div class="w-full max-w-xs p-8 space-y-6 bg-white/9 backdrop-blur-md rounded-xl shadow-xl">
-    <!-- Encabezado similar al de la imagen -->
     <div class="text-center space-y-2">
       <h1 class="text-4xl font-bold text-black-600">¡Bienvenido!</h1>
       <div class="h-1 w-50 mx-auto bg-black rounded-full"></div>
     </div>
 
-    <!-- Pregunta decorativa -->
     <p class="text-center italic text-gray-400 text-sm">
       ¿Olvidaste tu contraseña?
     </p>
 
-    <!-- Separador -->
     <div class="border-t border-gray-200 my-4"></div>
 
-    <!-- Formulario de login -->
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-4">
+    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" class="space-y-4" novalidate>
       <div>
         <label class="block mb-1 text-sm font-medium text-black">Correo electrónico</label>
-        <input 
-          type="email" 
-          [(ngModel)]="email" 
-          name="email" 
+        <input
+          type="email"
+          [(ngModel)]="email"
+          name="email"
           required
-          class="w-full px-4 py-2  bg-white/30 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" 
-          placeholder="tu@email.com" />
+          email
+          #emailInput="ngModel"
+          class="w-full px-4 py-2 bg-white/30 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+          placeholder="tu@email.com"
+        />
+        <div *ngIf="emailInput.invalid && emailInput.touched" class="text-red-600 text-xs mt-1">
+          Por favor ingresa un correo válido.
+        </div>
       </div>
 
       <div>
         <label class="block mb-1 text-sm font-medium text-black">Contraseña</label>
-        <input 
-          type="password" 
-          [(ngModel)]="password" 
-          name="password" 
+        <input
+          type="password"
+          [(ngModel)]="password"
+          name="password"
           required
-          class="w-full px-4 py-2 border  bg-white/30 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent" 
-          placeholder="••••••••" />
+          #passwordInput="ngModel"
+          class="w-full px-4 py-2 border bg-white/30 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent"
+          placeholder="••••••••"
+        />
+        <div *ngIf="passwordInput.invalid && passwordInput.touched" class="text-red-600 text-xs mt-1">
+          La contraseña es requerida.
+        </div>
       </div>
 
-      <button 
-        type="submit" 
-        [disabled]="!loginForm.valid" 
-        class="w-full px-4 py-3 text-white bg-black rounded-lg hover:bg-[#5f9bfb] transition-colors duration-200 font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
-        Iniciar Sesión
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid || loading"
+        class="w-full px-4 py-3 text-white bg-black rounded-lg hover:bg-[#5f9bfb] transition-colors duration-200 font-medium shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        <ng-container *ngIf="loading; else notLoading">
+          Ingresando...
+        </ng-container>
+        <ng-template #notLoading>
+          Iniciar Sesión
+        </ng-template>
       </button>
+
+      <div *ngIf="errorMsg" class="text-red-600 text-center text-sm mt-2">{{ errorMsg }}</div>
     </form>
   </div>
 </div>

@@ -1,13 +1,12 @@
-<!-- layout.component.html -->
 <div class="flex flex-col h-screen bg-gray-50">
-    <app-header (toggleSidebar)="toggleSidebar()"></app-header>
-    
-    <div class="flex flex-1 overflow-hidden">
-      <app-sidebar 
-        [isCollapsed]="isSidebarCollapsed"
-        (logout)="handleLogout()"
-      ></app-sidebar>
-      
-      <app-menu [isSidebarCollapsed]="isSidebarCollapsed"></app-menu>
-    </div>
+  <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+
+  <div class="flex flex-1 overflow-hidden">
+    <app-sidebar 
+      [isCollapsed]="isSidebarCollapsed"
+      (logout)="handleLogout()"
+    ></app-sidebar>
+
+    <app-menu [isSidebarCollapsed]="isSidebarCollapsed" class="flex-1 overflow-auto"></app-menu>
   </div>
+</div>

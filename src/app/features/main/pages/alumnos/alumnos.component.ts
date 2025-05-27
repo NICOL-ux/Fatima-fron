@@ -1,92 +1,124 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-interface Alumno {
-  id: number;
-  nombre: string;
-  apellido: string;
-  grado: string;
-  dni: string;
-  seccion: string;
-  anioEscolar: string;
-  telefono: string;
-}
+import { MatDialog } from '@angular/material/dialog';
+
+import { StudentService } from '../../../../core/services/student.service';
+import { Student } from '../../../../core/models/student.model';
+import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { DialogAlumnoComponent } from '../../components/dialog-alumno/dialog-alumno.component';
+import { ConfirmDialogComponent } from '../../components/confirm-dialog/confirm-dialog.component';
+
 
 @Component({
   selector: 'app-alumnos',
+  standalone: true,
   templateUrl: './alumnos.component.html',
-  styleUrls: ['./alumnos.component.scss']
-})
-export class AlumnosComponent {
-  alumnos: Alumno[] = [
-    {
-      id: 1,
-      nombre: 'estudante',
-      apellido: 'apellido1',
-      grado: 'A2',
-      dni: '452632589',
-      seccion: 'U',
-      anioEscolar: '2024',
-      telefono: 'GONAZLES'
-    },
-    {
-      id: 2,
-      nombre: 'estudante',
-      apellido: 'apellido1',
-      grado: 'A2',
-      dni: '452632589',
-      seccion: 'U',
-      anioEscolar: '2024r',
-      telefono: 'GONAZLES'
-    },
-    {
-      id: 3,
-      nombre: 'estudante',
-      apellido: 'apellido1',
-      grado: 'A2',
-      dni: '452632589',
-      seccion: 'U',
-      anioEscolar: '2024r',
-      telefono: 'GONAZLES'
-    },
-    {
-      id: 4,
-      nombre: 'estudante',
-      apellido: 'apellido1',
-      grado: 'A2',
-      dni: '452632589',
-      seccion: 'U',
-      anioEscolar: '2024r',
-      telefono: 'GONAZLES'
-    },
-    {
-      id: 5,
-      nombre: 'estudante',
-      apellido: 'apellido1',
-      grado: 'A2',
-      dni: '452632589',
-      seccion: 'U',
-      anioEscolar: '2024r',
-      telefono: 'GONAZLES'
-    },
-    {
-      id: 6,
-      nombre: 'estudante',
-      apellido: 'apellido1',
-      grado: 'A2',
-      dni: '452632589',
-      seccion: 'U',
-      anioEscolar: '2024r',
-      telefono: 'GONAZLES'
-    }
-  ];
+  styleUrls: ['./alumnos.component.scss'],
+   imports: [
+    CommonModule,
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatProgressBarModule,
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    RouterOutlet
+  ],
 
-  editarAlumno(id: number) {
-    console.log('Editar alumno con ID:', id);
-    // Lógica para editar alumno
+})
+export class AlumnosComponent implements OnInit {
+  students: Student[] = [];
+  filteredAlumnosList: Student[] = [];
+  searchText: string = '';
+  loading = false;
+
+  constructor(
+    private studentService: StudentService,
+    private dialog: MatDialog
+  ) {}
+
+  ngOnInit(): void {
+    this.loadStudents();
   }
 
-  eliminarAlumno(id: number) {
-    console.log('Eliminar alumno con ID:', id);
-    // Lógica para eliminar alumno
+  loadStudents() {
+    this.loading = true;
+    this.studentService.getStudents().subscribe({
+      next: (data) => {
+        this.students = data;
+        this.filteredAlumnosList = [...this.students];
+        this.loading = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar estudiantes:', err);
+        this.loading = false;
+      }
+    });
+  }
+
+  filterStudents(value: string) {
+    this.searchText = value.trim().toLowerCase();
+    if (!this.searchText) {
+      this.filteredAlumnosList = [...this.students];
+      return;
+    }
+    this.filteredAlumnosList = this.students.filter(alumno =>
+      alumno.dni.toLowerCase().includes(this.searchText) ||
+      alumno._id.toLowerCase().includes(this.searchText)
+    );
+  }
+
+  openCreateDialog() {
+    const dialogRef = this.dialog.open(DialogAlumnoComponent, {
+      width: '400px',
+      data: null
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'saved') {
+        this.loadStudents();
+      }
+    });
+  }
+
+  openEditDialog(alumno: Student) {
+    const dialogRef = this.dialog.open(DialogAlumnoComponent, {
+      width: '400px',
+      data: { ...alumno }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === 'saved') {
+        this.loadStudents();
+      }
+    });
+  }
+
+  openDeleteConfirm(alumno: Student) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '350px',
+      data: {
+        title: 'Confirmar eliminación',
+        message: `¿Seguro que quieres eliminar al estudiante ${alumno.firstName} ${alumno.lastName}?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirm => {
+      if (confirm === true) {
+        this.studentService.deleteStudent(alumno._id!).subscribe({
+          next: () => this.loadStudents(),
+          error: err => console.error('Error eliminando estudiante:', err)
+        });
+      }
+    });
   }
 }

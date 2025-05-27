@@ -1,30 +1,43 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { NgForm, FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router'; 
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [CommonModule, FormsModule,],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
 })
 export class LoginComponent {
-  email: string = 'admin@example.com';  
-  password: string = '123456';        
+  email = '';
+  password = '';
+  loading = false;
+  errorMsg = '';
 
-  constructor(private router: Router) {} 
+  constructor(private authService: AuthService, private router: Router) {}
 
-  onSubmit() {
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
-
-    // Aquí podrías validar el usuario si quieres
-    if (this.email === 'admin@example.com' && this.password === '123456') {
-      this.router.navigate(['index']);
-    } else {
-      alert('Credenciales incorrectas');
+  onSubmit(form: NgForm) {
+    if (!form.valid) {
+      form.control.markAllAsTouched();
+      return;
     }
+    this.loading = true;
+    this.errorMsg = '';
+
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        this.loading = false;
+        this.router.navigate(['/index/dashboard']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.errorMsg = err.error?.message || 'Error al iniciar sesión';
+      },
+    });
   }
 }

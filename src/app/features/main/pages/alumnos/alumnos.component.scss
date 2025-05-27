@@ -1,0 +1,9 @@
+table.mat-table {
+  border-collapse: collapse;
+
+  th, td {
+    border-bottom: 1px solid #e2e8f0; // Tailwind gray-200
+    vertical-align: middle; // alineación vertical correcta
+    text-align: center;
+  }
+}
