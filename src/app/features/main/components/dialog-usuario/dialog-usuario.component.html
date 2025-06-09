@@ -1,0 +1,87 @@
+<h2 mat-dialog-title class="text-xl font-bold text-gray-800 px-6 py-4 bg-gradient-to-r from-blue-50 to-white border-b border-gray-100">
+  {{ isEdit ? 'Editar Usuario' : 'Nuevo Usuario' }}
+</h2>
+
+<form [formGroup]="form" (ngSubmit)="save()" class="dialog-form px-6 py-4 bg-white" novalidate>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-600 font-medium">Nombre</mat-label>
+      <input matInput formControlName="firstName" autocomplete="given-name" 
+             class="text-gray-800 placeholder-gray-300">
+      <mat-icon matSuffix class="text-blue-500 opacity-70">person_outline</mat-icon>
+      <mat-error *ngIf="form.get('firstName')?.hasError('required')" 
+                 class="text-xs text-red-500 font-medium">
+        El nombre es obligatorio
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-600 font-medium">Apellido</mat-label>
+      <input matInput formControlName="lastName" autocomplete="family-name" 
+             class="text-gray-800 placeholder-gray-300">
+      <mat-icon matSuffix class="text-blue-500 opacity-70">people_outline</mat-icon>
+      <mat-error *ngIf="form.get('lastName')?.hasError('required')" 
+                 class="text-xs text-red-500 font-medium">
+        El apellido es obligatorio
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="w-full mb-5">
+    <mat-label class="text-gray-600 font-medium">Email</mat-label>
+    <input matInput formControlName="email" autocomplete="email" 
+           class="text-gray-800 placeholder-gray-300">
+    <mat-icon matSuffix class="text-blue-500 opacity-70">alternate_email</mat-icon>
+    <mat-error *ngIf="form.get('email')?.hasError('required')" 
+               class="text-xs text-red-500 font-medium">
+      El email es obligatorio
+    </mat-error>
+    <mat-error *ngIf="form.get('email')?.hasError('email')" 
+               class="text-xs text-red-500 font-medium">
+      Ingresa un email válido
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full mb-5">
+    <mat-label class="text-gray-600 font-medium">Contraseña</mat-label>
+    <input matInput formControlName="password" type="password"
+           [attr.placeholder]="isEdit ? 'Déjalo vacío para no cambiar' : ''"
+           autocomplete="new-password" [required]="!isEdit"
+           class="text-gray-800 placeholder-gray-300">
+    <mat-icon matSuffix class="text-blue-500 opacity-70">lock_outline</mat-icon>
+    <mat-error *ngIf="form.get('password')?.hasError('required') && !isEdit" 
+               class="text-xs text-red-500 font-medium">
+      La contraseña es obligatoria
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full mb-6">
+    <mat-label class="text-gray-600 font-medium">Rol</mat-label>
+    <mat-select formControlName="role" autocomplete="off" 
+                class="text-gray-800">
+      <mat-option value="user" class="text-gray-700">Usuario</mat-option>
+      <mat-option value="admin" class="text-gray-700">Administrador</mat-option>
+    </mat-select>
+    <mat-icon matSuffix class="text-blue-500 opacity-70">admin_panel_settings</mat-icon>
+    <mat-error *ngIf="form.get('role')?.hasError('required')" 
+               class="text-xs text-red-500 font-medium">
+      El rol es obligatorio
+    </mat-error>
+  </mat-form-field>
+
+  <div class="flex justify-end gap-3 pt-5 border-t border-gray-100">
+    <button mat-stroked-button type="button" (click)="cancel()"
+            class="text-gray-600 hover:bg-gray-50 border-gray-300 px-4 py-1 rounded-md 
+                   transition-colors duration-200 flex items-center">
+      <mat-icon class="text-gray-500 mr-1">close</mat-icon>
+      Cancelar
+    </button>
+    <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md 
+                   shadow-sm hover:shadow-md transition-all duration-200 flex items-center
+                   disabled:bg-blue-300 disabled:shadow-none">
+      <mat-icon class="text-white mr-1">{{ isEdit ? 'save' : 'person_add' }}</mat-icon>
+      {{ isEdit ? 'Guardar' : 'Crear' }}
+    </button>
+  </div>
+</form>

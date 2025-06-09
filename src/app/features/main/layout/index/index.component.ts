@@ -1,18 +1,28 @@
 import { Component } from '@angular/core';
-import { MenuComponent } from '../menu/menu.component';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { SidebarComponent } from '../../../../shared/components/sidebar/sidebar.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import{Router} from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { MenuComponent } from '../menu/menu.component';
 
 @Component({
   selector: 'app-index',
-  imports: [MenuComponent, HeaderComponent, SidebarComponent,MatSidenavModule, MatToolbarModule,MatIconModule,MatButtonModule],
+  standalone: true,
+  imports: [
+    HeaderComponent,
+    SidebarComponent,
+    RouterModule, // Necesario para router-outlet
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MenuComponent
+  ],
   templateUrl: './index.component.html',
-  styleUrl: './index.component.scss'
+  styleUrl: './index.component.scss',
 })
 export class IndexComponent {
   isSidebarCollapsed = false;
@@ -24,8 +34,7 @@ export class IndexComponent {
   }
 
   handleLogout() {
-    // Aquí iría tu lógica de cierre de sesión
-    console.log('Sesión cerrada');
-    this.router.navigate(['login']);
+    localStorage.clear();
+    this.router.navigate(['']);
   }
 }

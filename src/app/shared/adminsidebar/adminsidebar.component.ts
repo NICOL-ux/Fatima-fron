@@ -1,16 +1,20 @@
-import { Component, Input, Output, EventEmitter, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { AuthService } from '../../../core/services/auth.service';
-import { User } from '../../../core/models/user.model';  // <-- Importar User desde modelo
+import { AuthService } from '../../core/services/auth.service';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'app-sidebar',
+  selector: 'app-adminsidebar',
   standalone: true,
   imports: [
     CommonModule,
@@ -18,21 +22,17 @@ import { Subscription } from 'rxjs';
     MatIconModule,
     RouterModule,
     MatButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
-  templateUrl: './sidebar.component.html',
-  styleUrls: ['./sidebar.component.scss']
+  templateUrl: './adminsidebar.component.html',
+  styleUrls: ['./adminsidebar.component.scss'],
 })
-export class SidebarComponent implements OnInit, OnDestroy {
+export class AdminsidebarComponent implements OnInit, OnDestroy {
   @Input() isCollapsed = false;
-  @Output() logout = new EventEmitter<void>();
 
   menuItems = [
-    { icon: 'people', label: 'Alumnos', route: 'alumnos' },
-    { icon: 'groups', label: 'Sección/Grado', route: 'aulas' },
-    { icon: 'school', label: 'Gestion', route: 'gestion' },
-    { icon: 'payments', label: 'Ingreso', route: 'ingreso' },
-    { icon: 'history', label: 'Historial', route: 'historial' },
+    { icon: 'people', label: 'Usuarios', route: '/admin/dashboard' },
+    // Puedes agregar más rutas absolutas aquí si deseas
   ];
 
   userName = '';
@@ -43,7 +43,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
+    private authService: AuthService
   ) {}
 
   ngOnInit() {
@@ -67,12 +67,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   private getInitials(name: string): string {
     const words = name.split(' ');
-    return words.slice(0, 2).map(w => w.charAt(0).toUpperCase()).join('');
+    return words
+      .slice(0, 2)
+      .map(w => w.charAt(0).toUpperCase())
+      .join('');
   }
 
   onLogout() {
     this.authService.logout();
-    this.router.navigate(['/login']);
-    this.logout.emit();
+    this.router.navigate(['']); // Ir al login (raíz)
   }
 }

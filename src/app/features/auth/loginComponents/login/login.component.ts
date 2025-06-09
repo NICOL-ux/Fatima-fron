@@ -3,15 +3,13 @@ import { NgForm, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
+import { User } from '../../../../core/models/user.model';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule
-  ],
+  imports: [CommonModule, FormsModule],
 })
 export class LoginComponent {
   email = '';
@@ -26,13 +24,22 @@ export class LoginComponent {
       form.control.markAllAsTouched();
       return;
     }
+
     this.loading = true;
     this.errorMsg = '';
 
     this.authService.login(this.email, this.password).subscribe({
-      next: () => {
+      next: (response) => {
         this.loading = false;
-        this.router.navigate(['/index/dashboard']);
+
+        const user: User = response.user;
+
+        // Redirección basada en rol
+        if (user.role === 'admin') {
+          this.router.navigate(['/admin/dashboard']);
+        } else {
+          this.router.navigate(['/index/dashboard']);
+        }
       },
       error: (err) => {
         this.loading = false;

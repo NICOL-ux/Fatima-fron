@@ -45,7 +45,7 @@ export class IngresoComponent {
 
   loading = false;
 
-  statusOptions: TabletStatus[] = ['free', 'in_use', 'inactive'];
+  statusOptions: TabletStatus[] = ['free'];
 
   tabletForm = this.fb.group({
     code: ['', [Validators.required, Validators.minLength(4)]],

@@ -28,17 +28,21 @@ import { MatOptionModule } from '@angular/material/core';
     MatInputModule,
     MatProgressBarModule,
     MatSelectModule,
-    MatOptionModule
+    MatOptionModule,
+      MatSelectModule
   ],
   templateUrl: './gestion.component.html',
   styleUrls: ['./gestion.component.scss'],
 })
 export class GestionComponent implements OnInit {
+
   
   tablets: Tablet[] = [];
   filteredTablets: Tablet[] = [];
   loading = false;
   searchText = '';
+    usedCount: number = 0;
+freeCount: number = 0;
 
   constructor(private tabletsService: TabletsService, private dialog: MatDialog) {}
 
@@ -47,16 +51,18 @@ export class GestionComponent implements OnInit {
   }
 
   loadTablets(): void {
-    this.loading = true;
-    this.tabletsService.getAll().subscribe({
-      next: (data) => {
-        this.tablets = data;
-        this.filteredTablets = data;
-        this.loading = false;
-      },
-      error: () => (this.loading = false),
-    });
-  }
+  this.loading = true;
+  this.tabletsService.getAll().subscribe({
+    next: (data) => {
+      this.tablets = data;
+      this.filteredTablets = data;
+      this.usedCount = data.filter(t => t.assignedTo).length;
+      this.freeCount = data.filter(t => !t.assignedTo).length;
+      this.loading = false;
+    },
+    error: () => (this.loading = false),
+  });
+}
 
   filterTablets(value: string): void {
     this.filteredTablets = this.tablets.filter((t) =>

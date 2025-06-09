@@ -6,8 +6,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
 
 export interface ConfirmDialogData {
-  title: string;
-  message: string;
+  title?: string;
+  message?: string;
   confirmText?: string;
   cancelText?: string;
   color?: 'primary' | 'accent' | 'warn';
@@ -43,17 +43,17 @@ export class ConfirmDialogComponent {
     public dialogRef: MatDialogRef<ConfirmDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: ConfirmDialogData
   ) {
-    this.title = data.title || 'Confirmar acción';
-    this.message = data.message || '¿Estás seguro de realizar esta acción?';
-    this.confirmText = data.confirmText || 'Confirmar';
-    this.cancelText = data.cancelText || 'Cancelar';
-    this.color = data.color || 'primary';
+    // Usamos valores por defecto si no se proporcionan
+    this.title = data.title ?? 'Confirmar acción';
+    this.message = data.message ?? '¿Estás seguro de realizar esta acción?';
+    this.confirmText = data.confirmText ?? 'Confirmar';
+    this.cancelText = data.cancelText ?? 'Cancelar';
+    this.color = data.color ?? 'primary';
     this.icon = data.icon;
-    this.showCancel = data.showCancel !== false; // Default true
-    
-    // Configuración del diálogo
+    this.showCancel = data.showCancel ?? true;
+
     if (data.disableClose) {
-      dialogRef.disableClose = true;
+      this.dialogRef.disableClose = true;
     }
   }
 
@@ -66,17 +66,14 @@ export class ConfirmDialogComponent {
   }
 
   getIcon(): string {
-    return this.icon || this.getDefaultIcon();
+    return this.icon ?? this.getDefaultIcon();
   }
 
   private getDefaultIcon(): string {
     switch (this.color) {
-      case 'warn':
-        return 'warning';
-      case 'accent':
-        return 'help_outline';
-      default:
-        return 'info';
+      case 'warn': return 'warning';
+      case 'accent': return 'help_outline';
+      default: return 'info';
     }
   }
 }

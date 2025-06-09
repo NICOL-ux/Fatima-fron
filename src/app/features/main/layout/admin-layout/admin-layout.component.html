@@ -2,12 +2,12 @@
   <app-header (toggleSidebar)="toggleSidebar()"></app-header>
 
   <div class="flex flex-1 overflow-hidden">
-    <app-sidebar 
+    <app-adminsidebar 
       [isCollapsed]="isSidebarCollapsed"
       (logout)="handleLogout()"
-    ></app-sidebar>
+    ></app-adminsidebar>
 
     <app-menu [isSidebarCollapsed]="isSidebarCollapsed" class="flex-1 overflow-auto"></app-menu>
-     
+    
   </div>
 </div>

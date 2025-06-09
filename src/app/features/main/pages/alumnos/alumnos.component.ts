@@ -39,6 +39,7 @@ export class AlumnosComponent implements OnInit {
   filteredAlumnosList: Student[] = [];
   searchText: string = '';
   loading = false;
+  estudiantes= ['A', 'B', 'C','D'];
 
   constructor(
     private studentService: StudentService,

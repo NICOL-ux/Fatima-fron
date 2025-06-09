@@ -1,62 +1,111 @@
-<h2 mat-dialog-title class="dialog-title">
+<h2
+  mat-dialog-title
+  class="text-2xl font-bold text-gray-800 px-8 py-5 bg-gradient-to-r from-blue-50 to-white border-b border-gray-200"
+>
   {{ isEditMode ? 'Editar Estudiante' : 'Nuevo Estudiante' }}
 </h2>
 
-<form [formGroup]="studentForm" (ngSubmit)="onSave()" mat-dialog-content class="student-form">
-
-  <div class="form-grid">
-    <mat-form-field appearance="fill" class="form-field">
-      <mat-label>Nombre</mat-label>
-      <input matInput formControlName="firstName" />
-      <mat-error *ngIf="studentForm.get('firstName')?.invalid">
-        El nombre es obligatorio.
+<form
+  [formGroup]="studentForm"
+  (ngSubmit)="onSave()"
+  mat-dialog-content
+  class="dialog-form px-8 py-6 bg-white"
+  novalidate
+>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-600 font-medium">Nombre</mat-label>
+      <input
+        matInput
+        formControlName="firstName"
+        autocomplete="given-name"
+        class="text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+      />
+      <mat-icon matPrefix class="text-blue-500/80 mr-2">person_outline</mat-icon>
+      <mat-error *ngIf="studentForm.get('firstName')?.hasError('required')" class="text-xs text-red-600 font-medium mt-1">
+        El nombre es obligatorio
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="form-field">
-      <mat-label>Apellido</mat-label>
-      <input matInput formControlName="lastName" />
-      <mat-error *ngIf="studentForm.get('lastName')?.invalid">
-        El apellido es obligatorio.
-      </mat-error>
-    </mat-form-field>
-  </div>
-
-  <div class="form-grid">
-    <mat-form-field appearance="fill" class="form-field">
-      <mat-label>DNI</mat-label>
-      <input matInput formControlName="dni" />
-      <mat-error *ngIf="studentForm.get('dni')?.invalid">
-        DNI inválido (mínimo 6 caracteres).
-      </mat-error>
-    </mat-form-field>
-
-    <mat-form-field appearance="fill" class="form-field">
-      <mat-label>Grado</mat-label>
-      <input matInput formControlName="grade" />
-      <mat-error *ngIf="studentForm.get('grade')?.invalid">
-        El grado es obligatorio.
-      </mat-error>
-    </mat-form-field>
-  </div>
-
-  <div class="form-grid">
-    <mat-form-field appearance="fill" class="form-field">
-      <mat-label>Sección</mat-label>
-      <input matInput formControlName="section" />
-      <mat-error *ngIf="studentForm.get('section')?.invalid">
-        La sección es obligatoria.
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-600 font-medium">Apellido</mat-label>
+      <input
+        matInput
+        formControlName="lastName"
+        autocomplete="family-name"
+        class="text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+      />
+      <mat-icon matPrefix class="text-blue-500/80 mr-2">people_outline</mat-icon>
+      <mat-error *ngIf="studentForm.get('lastName')?.hasError('required')" class="text-xs text-red-600 font-medium mt-1">
+        El apellido es obligatorio
       </mat-error>
     </mat-form-field>
   </div>
 
-  <div class="actions">
-    <button mat-button type="button" (click)="onCancel()" [disabled]="loading">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-600 font-medium">DNI</mat-label>
+      <input
+        matInput
+        formControlName="dni"
+        maxlength="8"
+        autocomplete="off"
+        class="text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+      />
+      <mat-icon matPrefix class="text-blue-500/80 mr-2">badge</mat-icon>
+      <mat-error *ngIf="studentForm.get('dni')?.invalid" class="text-xs text-red-600 font-medium mt-1">
+        DNI inválido (exactamente 8 dígitos)
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label class="text-gray-600 font-medium">Grado</mat-label>
+      <input
+        matInput
+        formControlName="grade"
+        class="text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+      />
+      <mat-icon matPrefix class="text-blue-500/80 mr-2">school</mat-icon>
+      <mat-error *ngIf="studentForm.get('grade')?.hasError('required')" class="text-xs text-red-600 font-medium mt-1">
+        El grado es obligatorio
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="w-full mb-8">
+    <mat-label class="text-gray-600 font-medium">Sección</mat-label>
+    <input
+      matInput
+      formControlName="section"
+      class="text-gray-800 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+    />
+    <mat-icon matPrefix class="text-blue-500/80 mr-2">class</mat-icon>
+    <mat-error *ngIf="studentForm.get('section')?.hasError('required')" class="text-xs text-red-600 font-medium mt-1">
+      La sección es obligatoria
+    </mat-error>
+  </mat-form-field>
+
+  <div class="flex justify-end gap-4 pt-6 border-t border-gray-200">
+    <button
+      mat-stroked-button
+      type="button"
+      (click)="onCancel()"
+      [disabled]="loading"
+      class="text-gray-600 hover:bg-gray-100/80 border-gray-300 px-5 py-2 rounded-lg transition-all duration-200 flex items-center gap-1"
+    >
+      <mat-icon class="text-gray-500 scale-90">close</mat-icon>
       Cancelar
     </button>
-    <button mat-flat-button color="primary" type="submit" [disabled]="loading || studentForm.invalid">
+
+    <button
+      mat-flat-button
+      color="primary"
+      type="submit"
+      [disabled]="loading || studentForm.invalid"
+      class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-1 disabled:bg-blue-400 disabled:shadow-none"
+    >
+      <mat-icon class="text-white/90 scale-90">{{ loading ? 'hourglass_top' : 'save' }}</mat-icon>
       {{ loading ? 'Guardando...' : 'Guardar' }}
     </button>
   </div>
-
 </form>
