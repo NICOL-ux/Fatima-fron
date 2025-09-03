@@ -3,10 +3,10 @@ export interface Student {
   firstName: string;
   lastName: string;
   dni: string;
-  grade: number;
+  grade: string;
   section: string;
   tablet?: string;
   classroom?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
 }

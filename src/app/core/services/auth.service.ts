@@ -15,13 +15,13 @@ interface LoginResponse {
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private readonly apiUrl = `${environment.apiUrl}/auth`;
 
-  private _userSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
-  user$ = this._userSubject.asObservable();
+  private readonly _userSubject = new BehaviorSubject<User | null>(this.getUserFromStorage());
+  readonly user$ = this._userSubject.asObservable();
 
-  private _isLoggedInSubject = new BehaviorSubject<boolean>(!!this.getToken());
-  isLoggedIn$ = this._isLoggedInSubject.asObservable();
+  private readonly _isLoggedInSubject = new BehaviorSubject<boolean>(!!this.getToken());
+  readonly isLoggedIn$ = this._isLoggedInSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -32,14 +32,12 @@ export class AuthService {
           throw new Error('Invalid login response from server.');
         }
 
-        // Construir usuario excluyendo password, que puede ser undefined
         const user: User = {
           _id: response.user._id,
           email: response.user.email,
           role: response.user.role ?? 'user',
           firstName: response.user.firstName ?? '',
           lastName: response.user.lastName ?? '',
-          // password no se asigna aquí para evitar errores de tipo
         };
 
         this.setUserAndToken(user, response.accessToken);
@@ -58,9 +56,10 @@ export class AuthService {
     return localStorage.getItem('accessToken');
   }
 
-  /**
-   * Guarda el usuario y token en el localStorage y actualiza los observables.
-   */
+  getUser(): User | null {
+    return this._userSubject.value;
+  }
+
   setUserAndToken(user: User, token: string): void {
     localStorage.setItem('accessToken', token);
     localStorage.setItem('user', JSON.stringify(user));
@@ -68,18 +67,24 @@ export class AuthService {
     this._isLoggedInSubject.next(true);
   }
 
-  /**
-   * Intenta obtener el usuario desde localStorage.
-   */
   private getUserFromStorage(): User | null {
     const userJson = localStorage.getItem('user');
     if (!userJson) return null;
 
     try {
-      const user = JSON.parse(userJson) as User;
-      if (!user.role) {
-        user.role = 'user';
+      const parsed = JSON.parse(userJson);
+      if (typeof parsed !== 'object' || !parsed.email || !parsed._id) {
+        return null;
       }
+
+      const user: User = {
+        _id: parsed._id,
+        email: parsed.email,
+        role: parsed.role ?? 'user',
+        firstName: parsed.firstName ?? '',
+        lastName: parsed.lastName ?? '',
+      };
+
       return user;
     } catch {
       return null;

@@ -10,12 +10,12 @@
         <div class="w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center shadow-lg">
           <img
             src="Nuestr1.png"
-            alt="Logo"
+            alt="Logo Nuestra Señora Fátima"
             class="h-12 w-12 transition-all hover:rotate-12 hover:scale-110"
           />
         </div>
         <div class="flex flex-col">
-          <h2 class="text-xl font-bold text-gray-800">Nuestra Señora Fátima</h2>
+          <h2 class="text-xl font-bold text-gray-800 leading-tight">Nuestra Señora Fátima</h2>
           <span class="text-sm text-gray-500">Sistema Educativo</span>
         </div>
       </div>
@@ -38,7 +38,8 @@
       mat-list-item
       [routerLink]="item.route"
       routerLinkActive="active-menu-item"
-      class="hover:bg-blue-50 rounded mx-0"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="hover:bg-blue-50 rounded"
     >
       <div class="flex items-center w-full py-1 px-1">
         <mat-icon class="text-gray-600">{{ item.icon }}</mat-icon>
@@ -50,14 +51,14 @@
   </mat-nav-list>
 
   <!-- Footer / Perfil + Logout -->
-  <div class="border-t border-gray-200 p-4 bg-blue-50" [class.p-2]="isCollapsed">
+  <div class="border-t border-gray-200 bg-blue-50" [ngClass]="isCollapsed ? 'p-2' : 'p-4'">
     <ng-container *ngIf="!isCollapsed; else collapsedFooter">
       <div class="flex items-center space-x-3 mb-3">
         <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center text-white shadow-md">
           <span class="text-sm font-medium">{{ userInitials }}</span>
         </div>
         <div>
-          <p class="text-sm font-medium text-gray-800">{{ userName }}</p>
+          <p class="text-sm font-medium text-gray-800 truncate">{{ userName }}</p>
           <p class="text-xs text-gray-500 truncate">{{ userEmail }}</p>
         </div>
       </div>
@@ -67,6 +68,7 @@
         color="warn"
         (click)="onLogout()"
         class="w-full flex items-center justify-center space-x-2 hover:shadow-md transition-shadow duration-200"
+        aria-label="Cerrar sesión"
       >
         <mat-icon>logout</mat-icon>
         <span>Cerrar sesión</span>
@@ -89,6 +91,7 @@
           (click)="onLogout()"
           matTooltip="Cerrar sesión"
           matTooltipPosition="right"
+          aria-label="Cerrar sesión"
           class="hover:shadow-md transition-shadow duration-200 rounded-full"
         >
           <mat-icon>logout</mat-icon>

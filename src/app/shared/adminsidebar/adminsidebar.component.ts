@@ -32,7 +32,7 @@ export class AdminsidebarComponent implements OnInit, OnDestroy {
 
   menuItems = [
     { icon: 'people', label: 'Usuarios', route: '/admin/dashboard' },
-    // Puedes agregar más rutas absolutas aquí si deseas
+    // Agrega más ítems si lo necesitas
   ];
 
   userName = '';
@@ -46,35 +46,43 @@ export class AdminsidebarComponent implements OnInit, OnDestroy {
     private authService: AuthService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.userSubscription = this.authService.user$.subscribe(user => {
       if (user) {
-        const fullName = `${user.firstName} ${user.lastName}`.trim();
-        this.userName = fullName;
+        const firstName = user.firstName || '';
+        const lastName = user.lastName || '';
+        const fullName = `${firstName} ${lastName}`.trim();
+
+        this.userName = fullName || user.email;
         this.userEmail = user.email;
-        this.userInitials = this.getInitials(fullName);
+        this.userInitials = this.getInitials(fullName || user.email);
       } else {
-        this.userName = '';
-        this.userEmail = '';
-        this.userInitials = '';
+        this.clearUserInfo();
       }
     });
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.userSubscription?.unsubscribe();
   }
 
+  onLogout(): void {
+    this.authService.logout();
+    this.router.navigate(['']); // Redirigir al login
+  }
+
   private getInitials(name: string): string {
-    const words = name.split(' ');
-    return words
+    return name
+      .split(' ')
+      .filter(Boolean)
       .slice(0, 2)
-      .map(w => w.charAt(0).toUpperCase())
+      .map(part => part.charAt(0).toUpperCase())
       .join('');
   }
 
-  onLogout() {
-    this.authService.logout();
-    this.router.navigate(['']); // Ir al login (raíz)
+  private clearUserInfo(): void {
+    this.userName = '';
+    this.userEmail = '';
+    this.userInitials = '';
   }
 }
